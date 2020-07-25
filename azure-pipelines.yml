@@ -17,11 +17,13 @@ steps:
       displayName: "dotnet build $(buildConfiguration)"
 
     - task: DotNetCoreCLI@2
+      displayName: "Run Tests"
       inputs:
           command: "test"
           projects: "**/*Test/*.csproj"
           arguments: "--configuration $(buildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=$(Build.SourcesDirectory)/TestResults/Coverage/"
           testRunTitle: "Run xUnit Tests"
+          publishTestResults: true
 
     - task: PublishCodeCoverageResults@1
       displayName: "Publish code coverage report"
@@ -30,7 +32,7 @@ steps:
           summaryFileLocation: "$(Build.SourcesDirectory)/**/coverage.cobertura.xml"
 
     - task: DotNetCoreCLI@2
-      displayName: "dotnet publish --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)"
+      displayName: "dotnet publish"
       inputs:
           command: publish
           publishWebProjects: false
